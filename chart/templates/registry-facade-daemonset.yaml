@@ -35,6 +35,24 @@ spec:
 {{ include "gitpod.workspaceAffinity" $this | indent 6 }}
       serviceAccountName: registry-facade
       enableServiceLinks: false
+      initContainers:
+        - name: update-ca-certificates
+          image: alpine:3.13
+          command:
+          - sh
+          - -c
+          - |
+            set -e
+            apk add --update ca-certificates
+            cp /etc/ssl/gitpod-ca.crt /usr/local/share/ca-certificates
+            update-ca-certificates
+            cp /etc/ssl/certs/* /ssl-certs
+          volumeMounts:
+            - name: cacerts
+              mountPath: "/ssl-certs"
+            - name: registry-certs
+              subPath: ca.crt
+              mountPath: /etc/ssl/gitpod-ca.crt
       containers:
       - name: registry-facade
         image: {{ template "gitpod.comp.imageFull" $this }}
@@ -51,6 +69,8 @@ spec:
 {{ include "gitpod.container.defaultEnv" $this | indent 8 }}
 {{ include "gitpod.container.tracingEnv" $this | indent 8 }}
         volumeMounts:
+        - name: cacerts
+          mountPath: /etc/ssl/certs
         - name: cache
           mountPath: "/mnt/cache"
         - name: config
@@ -88,5 +108,10 @@ spec:
         secret:
           secretName: {{ .Values.certificatesSecret.secretName }}
       {{- end }}
+      - name: registry-certs
+        secret:
+          secretName: builtin-registry-certs
+      - name: cacerts
+        emptyDir: {}
 {{ toYaml .Values.defaults | indent 6 }}
 {{ end }}

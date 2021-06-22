@@ -646,7 +646,8 @@ rabbitmq:
     {{- end }}
 
 cert-manager:
-  enabled: false
+  # assume cert-manager is already installed
+  install: false
   installCRDs: true
   ca:
     issuerName: ca-issuer
