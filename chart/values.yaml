@@ -646,11 +646,17 @@ rabbitmq:
     {{- end }}
 
 cert-manager:
-  # assume cert-manager is already installed
+  # assume cert-manager is already installed in the cluster
   install: false
+  # gitpod Certificate
+  certificate:
+    # by default use the gitpod CA issuer
+    issuerName: null
+    # allow additional names to *.ws<shortname>.<hostname> and *.<hostname>
+    additionalDNSNames: []
   installCRDs: true
+  # custom CA for certificates used by gitpod
+  # this certificates are internal to the namespace where gitpod is running
   ca:
     issuerName: ca-issuer
-    certificate:
-      selfSigned: true
-      secretName: gitpod-ca-certificate
+    secretName: gitpod-ca-certificate

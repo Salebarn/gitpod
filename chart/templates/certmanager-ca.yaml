@@ -12,12 +12,12 @@ spec:
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: {{ $certManager.ca.certificate.secretName }}
+  name: {{ $certManager.ca.secretName }}
   namespace: {{ .Release.Namespace }}
 spec:
   isCA: true
   commonName: {{ $certManager.ca.issuerName }}
-  secretName: {{ $certManager.ca.certificate.secretName }}
+  secretName: {{ $certManager.ca.secretName }}
   privateKey:
     algorithm: ECDSA
     size: 256
@@ -33,4 +33,4 @@ metadata:
   namespace: {{ .Release.Namespace }}
 spec:
   ca:
-    secretName: {{ $certManager.ca.certificate.secretName }}
+    secretName: {{ $certManager.ca.secretName }}
