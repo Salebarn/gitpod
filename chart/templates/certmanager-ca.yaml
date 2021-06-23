@@ -3,7 +3,7 @@
 
 {{ $certManager := (index .Values "cert-manager") }}
 apiVersion: cert-manager.io/v1
-kind: ClusterIssuer
+kind: Issuer
 metadata:
   name: gitpod-selfsigned-issuer
 spec:
@@ -23,7 +23,7 @@ spec:
     size: 256
   issuerRef:
     name: gitpod-selfsigned-issuer
-    kind: ClusterIssuer
+    kind: Issuer
     group: cert-manager.io
 ---
 apiVersion: cert-manager.io/v1
