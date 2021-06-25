@@ -61,3 +61,27 @@ cd ..
 cd driver/bpf
 make CLANG=clang-7 LLC=llc-7 -j16
 ```
+
+
+## Debugging the Linux kernel
+
+In case you need to debug the kernel while working on it.
+
+First, you need to compile the ubuntu kernel yourself, the default one
+does not come with debugging symbols unfortunately.
+
+```
+sudo apt update -y
+sudo apt install flex bison -y
+git clone --depth 1  git://kernel.ubuntu.com/ubuntu/ubuntu-$(lsb_release --codename | cut -f2).git /workspace/kernel
+cd /workspace/kernel
+cp /boot/config-$(uname -r) .config
+make -j16
+```
+
+Now stop the qemu VM by using `Ctrl-a c` in its terminal pane, then start
+it with the new `VMLINUX_PATH`.
+
+```
+VMLINUX_PATH=$PWD/vmlinux leeway run components/ee/agent-smith:qemu
+```
